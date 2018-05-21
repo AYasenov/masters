@@ -1,0 +1,4 @@
+server:
+  host: localhost
+  port: 3000
+googleApiKey: AIzaSyCbNE_LzeCrJghWCPgEDCWY6E2JCN4OKsA
