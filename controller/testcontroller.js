@@ -43,7 +43,7 @@ module.exports = async (request, h) => {
     });
 
     //make request
-    const result = await Promise.all(grouppedPromises);
+    const infraObjects = await Promise.all(grouppedPromises);
 
     /**
      groupedResult = {
@@ -52,34 +52,53 @@ module.exports = async (request, h) => {
      }
      */
         //group results by infrastructure categories
+
     const groupedResult = {};
     types.forEach((type, index) => {
-        groupedResult[type] = [];
+        groupedResult[type] = {objects: []};
 
-        result[index].forEach(infraObj => {
+        infraObjects[index].forEach(infraObj => {
             infraObj.json.results.forEach(obj => {
-                groupedResult[type].push(obj);
+                groupedResult[type].objects.push(obj);
             });
         });
     });
 
+    const rankObj = new Ranking(_tmpRanking);
+    rankObj.calculateRanks();
+    rankObj.calculateUtilityCoeff();
+
+    let generalMarkForObject = 0;
+
     //calculate distance
     for (const prop in groupedResult) {
-        const result = await googleMapsClient.distanceMatrix({
+        const tempVariable = await googleMapsClient.distanceMatrix({
             mode: 'walking',
             origins: location,
-            destinations: groupedResult[prop].map(obj => {
+            destinations: groupedResult[prop].objects.map(obj => {
                 return `place_id:${obj.place_id}`
             }).join('|')
         }).asPromise();
 
+        groupedResult[prop].generalMark = 0;
+
         //add distance to the objects
-        groupedResult[prop].forEach((item, index) => {
-            item.distance = result.json.rows[0].elements[index].distance.value
+        groupedResult[prop].objects.forEach((item, index) => {
+            try {
+                item.distance = tempVariable.json.rows[0].elements[index].distance.value;
+            } catch (err) {
+                item.distance = Infinity;
+            }
+
+            if (item.distance < radius) {
+                item.distanceRel = -(item.distance - radius) / radius;
+            } else {
+                item.distanceRel = 0;
+            }
         });
 
         //sort infrastructure array by distance from low to high
-        groupedResult[prop].sort((a, b) => {
+        groupedResult[prop].objects.sort((a, b) => {
             if (a.distance < b.distance) {
                 return -1;
             }
@@ -88,11 +107,21 @@ module.exports = async (request, h) => {
             }
             return 0;
         });
+
+        groupedResult[prop].objects.forEach((item, index) => {
+            item.rate = item.distanceRel * Math.pow(0.5, (index + 1)) * (item.rating ? item.rating / 5 : 0.5);
+            groupedResult[prop].generalMark += item.rate;
+        });
+
+        for (const prop1 in _tmpRanking) {
+            if (_tmpRanking[prop1].indexOf(prop) !== -1) {
+                groupedResult[prop].generalMark = groupedResult[prop].generalMark * rankObj.utilityCoeff[prop1];
+                break;
+            }
+        }
+
+        generalMarkForObject += groupedResult[prop].generalMark;
     }
 
-    const rankObj = new Ranking(_tmpRanking);
-    rankObj.calculateRanks();
-    rankObj.calculateUtilityCoeff();
-
-    return 'Hello world';
+    return generalMarkForObject;
 };
