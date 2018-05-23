@@ -23,11 +23,7 @@ const _tmpRanking = {
     2: ['health', 'education']
 };
 
-module.exports = async (request, h) => {
-    const radius = request.payload.radius;
-    const location = request.payload.location;
-    // const types = request.payload.types;
-
+const _calculate = async (radius, location) => {
     const types = [];
     _.forEach(_tmpRanking, (value) => {
         value.forEach(type => {
@@ -122,6 +118,19 @@ module.exports = async (request, h) => {
 
         generalMarkForObject += groupedResult[prop].generalMark;
     }
-
     return generalMarkForObject;
+};
+
+module.exports = async (request, h) => {
+    const radius = request.payload.radius;
+    const location = request.payload.location;
+    // const types = request.payload.types;
+
+    const marks = [];
+
+    for (let i = 0; i < location.length; i++) {
+        marks.push(await _calculate(radius, location[i]));
+    }
+
+    return marks;
 };
