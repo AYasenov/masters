@@ -4,7 +4,8 @@
   "description": "Masters project",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "react-scripts build && node server",
+    "build": "react-scripts build"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,12 @@
     "bluebird": "^3.5.1",
     "config": "^1.30.0",
     "hapi": "^17.4.0",
-    "lodash": "^4.17.10"
+    "inert": "^5.1.0",
+    "lodash": "^4.17.10",
+    "request": "^2.87.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "react-scripts": "1.1.4"
   },
   "devDependencies": {
     "js-yaml": "^3.11.0"

@@ -8,16 +8,16 @@ const server = Hapi.server({
     host: config.get('server.host'),
     routes: {
         files: {
-            relativeTo: Path.join(__dirname, 'public')
+            relativeTo: Path.join(__dirname, 'build')
         }
     }
 });
 
-server.route(routes);
-
 const init = async () => {
 
     await server.register(require('inert'));
+
+    server.route(routes);
 
     await server.start();
     console.log(`Server running at: ${server.info.uri}`);
