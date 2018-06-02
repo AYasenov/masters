@@ -17,7 +17,7 @@ const _estates = [
         name: '3T flat near HTZ market',
         id: 2,
         location: '49.939402,36.378565',
-        price: 6000,
+        price: 60000,
         photo: 'https://img01-olxua.akamaized.net/img-olxua/427059082_8_1000x700_otel-kvartira-arenda-dlya-devochek-_rev011.jpg',
         params: [
             {value: 60000, name: 'price'},

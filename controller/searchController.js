@@ -64,7 +64,7 @@ const _calculate = async (radius, estate, prettyEstate) => {
     rankObj.calculateRanks();
     rankObj.calculateUtilityCoeff();
 
-    const resultEstate = Object.assign({generalMark: 0}, estate);
+    const resultEstate = Object.assign({generalMark: 0, infra: {}}, estate);
 
     //calculate distance
     for (const prop in groupedResult) {
@@ -117,7 +117,7 @@ const _calculate = async (radius, estate, prettyEstate) => {
         }
 
         resultEstate.generalMark += groupedResult[prop].generalMark;
-        resultEstate[prop] = prettyEstate(groupedResult[prop].objects);
+        resultEstate.infra[prop] = prettyEstate(groupedResult[prop].objects);
     }
     return resultEstate;
 };

@@ -5,7 +5,7 @@ import Filter from './components/Filter';
 import EstateList from './components/EstateList';
 
 class App extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -21,6 +21,18 @@ class App extends Component {
             estates: this.state.estates.map(item => {
                 return {id: item.id, location: item.location}
             })
+        }).then(response => {
+            const estates = Object.assign([], this.state.estates);
+
+            response.data.forEach(rateObj => {
+                for (let i = 0; i < estates.length; i++) {
+                    if (estates[i].id === rateObj.id) {
+                        Object.assign(estates[i], rateObj);
+                    }
+                }
+            });
+
+            this.setState({estates: estates});
         });
     }
 

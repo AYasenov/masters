@@ -4,6 +4,37 @@ import './estate.css';
 
 class Estate extends Component {
     render() {
+        const infraTable = [];
+
+        if (this.props.estate.infra) {
+            for (const category in this.props.estate.infra) {
+                infraTable.push(
+                    <div>
+                        <h4>{category.toUpperCase()}</h4>
+                        <table className="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Infrastructure object</th>
+                                <th scope="col">Distance</th>
+                                <th scope="col">Public rate</th>
+                                <th scope="col">Calculated rate</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {this.props.estate.infra[category].map(obj => {
+                                return <tr className="table-active">
+                                    <td>{obj.name}</td>
+                                    <td>{obj.distance}</td>
+                                    <td>{obj.rating}</td>
+                                    <td>{obj.rate}</td>
+                                </tr>
+                            })}
+                            </tbody>
+                        </table>
+                    </div>);
+            }
+        }
+
         return <div className="estate">
             <h5>{this.props.estate.name}</h5>
             <div className="row">
@@ -19,6 +50,9 @@ class Estate extends Component {
                             </li>
                         })}
                     </ul>
+                </div>
+                <div className="col-sm-3">
+                    {infraTable}
                 </div>
             </div>
         </div>;
