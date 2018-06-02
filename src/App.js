@@ -33,11 +33,11 @@ class App extends Component {
             });
 
             estates.sort((a, b) => {
-                if (a.price < b.price) {
+                if (a.generalMark < b.generalMark) {
                     return 1;
                 }
 
-                if (a.price > b.price) {
+                if (a.generalMark > b.generalMark) {
                     return -1;
                 }
 
