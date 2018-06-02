@@ -1,0 +1,14 @@
+.myimage{
+    width: 100%;
+}
+
+.imgdiv{
+    height: 200px;
+    overflow: hidden;
+}
+
+.estate {
+    margin-bottom:15px;
+    border-bottom: #2fa4e7 solid;
+    margin-left: 15px;
+}

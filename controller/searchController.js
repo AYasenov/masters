@@ -23,7 +23,7 @@ const _tmpRanking = {
     2: ['health', 'education']
 };
 
-const _calculate = async (radius, location) => {
+const _calculate = async (radius, estate, prettyEstate) => {
     const types = [];
     _.forEach(_tmpRanking, (value) => {
         value.forEach(type => {
@@ -34,7 +34,7 @@ const _calculate = async (radius, location) => {
     //add promises arrays by type
     const grouppedPromises = types.map(type => {
         return Promise.all(_groupedTypes[type].map(subtype => { //search nearby objects by subtype
-            return googleMapsClient.placesNearby({location, radius, type: subtype}).asPromise();
+            return googleMapsClient.placesNearby({location: estate.location, radius, type: subtype}).asPromise();
         }));
     });
 
@@ -64,13 +64,13 @@ const _calculate = async (radius, location) => {
     rankObj.calculateRanks();
     rankObj.calculateUtilityCoeff();
 
-    let generalMarkForObject = 0;
+    const resultEstate = Object.assign({generalMark: 0}, estate);
 
     //calculate distance
     for (const prop in groupedResult) {
         const tempVariable = await googleMapsClient.distanceMatrix({
             mode: 'walking',
-            origins: location,
+            origins: estate.location,
             destinations: groupedResult[prop].objects.map(obj => {
                 return `place_id:${obj.place_id}`
             }).join('|')
@@ -116,20 +116,20 @@ const _calculate = async (radius, location) => {
             }
         }
 
-        generalMarkForObject += groupedResult[prop].generalMark;
+        resultEstate.generalMark += groupedResult[prop].generalMark;
+        resultEstate[prop] = prettyEstate(groupedResult[prop].objects);
     }
-    return generalMarkForObject;
+    return resultEstate;
 };
 
 module.exports = async (request, h) => {
     const radius = request.payload.radius;
-    const location = request.payload.location;
-    // const types = request.payload.types;
+    const estates = request.payload.estates;
 
     const marks = [];
 
-    for (let i = 0; i < location.length; i++) {
-        marks.push(await _calculate(radius, location[i]));
+    for (let i = 0; i < estates.length; i++) {
+        marks.push(await _calculate(radius, estates[i], request.server.methods.prettyEstate));
     }
 
     return marks;
