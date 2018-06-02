@@ -49,6 +49,10 @@ class Estate extends Component {
                                 <span className="badge badge-primary badge-pill">{item.value}</span>
                             </li>
                         })}
+                        {this.props.estate.generalMark && <li className="list-group-item d-flex justify-content-between align-items-center">
+                            General Mark
+                            <span className="badge badge-primary badge-pill">{this.props.estate.generalMark}</span>
+                        </li>}
                     </ul>
                 </div>
                 <div className="col-sm-3">
