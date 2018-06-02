@@ -1,10 +1,10 @@
-const testHandler = require('../controller/testcontroller');
+const searchHandler = require('../controller/searchController');
 
 module.exports = [
     {
         method: 'post',
-        path: '/testroute',
-        handler: testHandler
+        path: '/search',
+        handler: searchHandler
     },
     {
         method: 'get',

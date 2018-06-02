@@ -9,20 +9,15 @@ class Filter extends Component {
                 <div className="col-sm-2">
                     <fieldset className="form-group">
                         <legend>Choose sale type</legend>
-                        <div className="form-check">
-                            <label className="form-check-label">
-                                <input type="radio" className="form-check-input" name="buy" id="buy"
-                                       value="option1" checked=""/>
-                                Buy
-                            </label>
-                        </div>
-                        <div className="form-check">
-                            <label className="form-check-label">
-                                <input type="radio" className="form-check-input" name="rent" id="rent"
-                                       value="option2"/>
-                                Rent
-                            </label>
-                        </div>
+                        {['buy', 'rent'].map(item => {
+                            return <div className="form-check">
+                                <label className="form-check-label">
+                                    <input type="radio" className="form-check-input" name={item} id={item}
+                                           value="option1" checked=""/>
+                                    {item.toUpperCase()}
+                                </label>
+                            </div>;
+                        })}
                     </fieldset>
                 </div>
                 <div className="col-sm-2">
@@ -63,8 +58,9 @@ class Filter extends Component {
                             {category.toUpperCase()}
                         </label>
                     </div>
-                </div>
+                </div>;
             })}
+            <button type="button" className="btn btn-primary btn-lg" onClick={this.props.onSubmit}>Submit search and evaluation</button>
         </div>
     }
 }
